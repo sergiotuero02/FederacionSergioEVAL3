@@ -33,7 +33,7 @@ public class ComparadorMedallas implements Comparator<Metal> {
 			ret.add(m);
 		}
 		Collections.sort(ret, new ComparadorMedallas());
-		System.out.println("La lista ordenada de todas las medallas es:");
+		System.out.println("La lista ordenada de todas las personas es:");
 		Iterator<Metal> it = ret.iterator();
 		int i = 1; // Marcador de posicion de la medalla (orden)
 		while (it.hasNext()) {

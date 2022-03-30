@@ -1,19 +1,32 @@
 package entidades;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Scanner;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
+
+import utils.ConexBD;
+import utils.Datos;
 import utils.Utilidades;
 import validaciones.Validaciones;
 
-public class DatosPersona {
+public class DatosPersona implements Comparable<DatosPersona> {
 	private long id;
 	private String nombre;
 	private String telefono;
 	private LocalDate fechaNac;
 
-	private Documentacion nifnie; //Examen 2 Ejercicio 3.2
+	private Documentacion nifnie; // Examen 2 Ejercicio 3.2
 
 	public DatosPersona(long id, String nombre, String telefono, LocalDate fechaNac) {
 		super();
@@ -22,8 +35,8 @@ public class DatosPersona {
 		this.telefono = telefono;
 		this.fechaNac = fechaNac;
 	}
-	
-	//Examen 2 Ejercicio 3.2
+
+	// Examen 2 Ejercicio 3.2
 	public DatosPersona(long id, String nombre, String telefono, LocalDate fechaNac, Documentacion nifnie) {
 		super();
 		this.id = id;
@@ -134,4 +147,76 @@ public class DatosPersona {
 		return ret;
 	}
 
+//Examen 9, ejercicio 1, implementación del método data
+	public String data() {
+		return "" + this.getId() + "|" + this.getNombre() + "|" + this.telefono + "|"
+				+ this.getFechaNac().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "|"
+				+ this.getNifnie().mostrar();
+
+	}
+
+	public static void exportarPersonas() {
+		String path = "atletas_alfabetico.txt";
+		File fichero = new File(path);
+		FileWriter escritor = null;
+		PrintWriter buffer = null;
+		ComparadorAlfabetico compare = new ComparadorAlfabetico();
+		try {
+			try {
+				escritor = new FileWriter(fichero, false);
+				buffer = new PrintWriter(escritor);
+				for (DatosPersona dp : Datos.PERSONAS) {
+					compare.personasOrdenadas();
+					buffer.println(dp.data());
+				}
+
+			} finally {
+				if (buffer != null) {
+					buffer.close();
+				}
+				if (escritor != null) {
+					escritor.close();
+				}
+			}
+
+		} catch (FileNotFoundException ex) {
+			System.out.println("Se ha producido una FileNotFoundException" + ex.getMessage());
+		} catch (IOException ex) {
+			System.out.println("Se ha producido una IOException" + ex.getMessage());
+		} catch (Exception ex) {
+			System.out.println("Se ha producido una Exception" + ex.getMessage());
+		}
+	}
+
+	@Override
+	public int compareTo(DatosPersona o) {
+		int comparadorfechas = this.getFechaNac().compareTo(o.getFechaNac());
+		int comparadordocumentacion = this.getNifnie().compareTo(o.getNifnie());
+		if (comparadorfechas == 0) {
+
+			return comparadordocumentacion;
+		} else
+			return comparadorfechas;
+
+	}
+
+	public static void insertarPersonas() {
+		Connection conex = ConexBD.establecerConexion();
+		String ConsultaInsertSTR = "insert into personas(id, nombre, telefono, nifnie) values (?,?,?,?)";
+		try {
+			PreparedStatement pstmt = conex.prepareStatement(ConsultaInsertSTR);
+			for (DatosPersona dp : Datos.PERSONAS) {
+				dp.compareTo(dp);
+				pstmt.setLong(1, dp.getId());
+				pstmt.setString(2, dp.getNombre());
+				pstmt.setString(3, dp.getTelefono());
+				pstmt.setString(4, dp.getNifnie().mostrar());
+				int resultadoInsercion = pstmt.executeUpdate();
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Se ha producido una SQLException:" + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }
