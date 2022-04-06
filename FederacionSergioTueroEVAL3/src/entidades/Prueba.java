@@ -14,6 +14,7 @@ public class Prueba {
 	private LocalDate fecha; // solo fecha
 	private boolean individual; // indica si es individual o no (por equipos)
 	private Lugar lugar;
+	private Patrocinador patrocinador;
 
 	private Colegiado[] arbitraje = new Colegiado[3];
 	private Resultado resultado = null;
@@ -120,6 +121,22 @@ public class Prueba {
 		return lugar;
 	}
 
+	public Patrocinador getPatrocinador() {
+		return patrocinador;
+	}
+
+	public void setPatrocinador(Patrocinador patrocinador) {
+		this.patrocinador = patrocinador;
+	}
+
+	public Colegiado[] getArbitraje() {
+		return arbitraje;
+	}
+
+	public void setArbitraje(Colegiado[] arbitraje) {
+		this.arbitraje = arbitraje;
+	}
+
 	public void setLugar(Lugar lugar) {
 		this.lugar = lugar;
 	}
@@ -202,9 +219,9 @@ public class Prueba {
 		}
 	}
 
-	///Examen 6 Ejercicio 4
+	/// Examen 6 Ejercicio 4
 	/***
-	 * Función que devuelve una cadena de caracteres con la siguiente estructura: 
+	 * Función que devuelve una cadena de caracteres con la siguiente estructura:
 	 * <idPrueba>”. ”<nombre>” (”<fecha(dd/mm/YYYY)>” en <lugarPrueba>) de tipo “
 	 * <individual/colectiva>“ Si la prueba dispone de equipo arbitral, se mostrarán
 	 * los nombres del equipo arbitral. Además, si está cerrada, se mostrará el
@@ -218,16 +235,20 @@ public class Prueba {
 	@Override
 	public String toString() {
 		String ret = "";
-		ret += "" + id + "." + nombre + " (" + fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " en " + lugar.getNombre() + ") de tipo " + (this.isIndividual()?"individual":"colectiva")+"\n";
-		if(this.hayEquipoArbitral()) {
+		ret += "" + id + "." + nombre + " (" + fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " en "
+				+ lugar.getNombre() + ") de tipo " + (this.isIndividual() ? "individual" : "colectiva") + "\n";
+		if (this.hayEquipoArbitral()) {
 			ret += this.nombresEquipoArbitral();
 		}
-		if(this.cerrada()) {
+		if (this.cerrada()) {
 			Resultado res = this.getResultado();
 			Participante[] podio = res.getPodio();
-			ret += "Primer puesto:"+ podio[0].getId()+", con el dorsal" + podio[0].getDorsal()+" por la calle "+ podio[0].getCalle()+" Oro#"+ res.getPrimero().getId()+"\n";
-			ret += "Segundo puesto:"+ podio[1].getId()+", con el dorsal" + podio[1].getDorsal()+" por la calle "+ podio[1].getCalle()+" Oro#"+ res.getSegundo().getId()+"\n";
-			ret += "Tercer puesto:"+ podio[2].getId()+", con el dorsal" + podio[2].getDorsal()+" por la calle "+ podio[2].getCalle()+" Oro#"+ res.getTercero().getId()+"\n";
+			ret += "Primer puesto:" + podio[0].getId() + ", con el dorsal" + podio[0].getDorsal() + " por la calle "
+					+ podio[0].getCalle() + " Oro#" + res.getPrimero().getId() + "\n";
+			ret += "Segundo puesto:" + podio[1].getId() + ", con el dorsal" + podio[1].getDorsal() + " por la calle "
+					+ podio[1].getCalle() + " Oro#" + res.getSegundo().getId() + "\n";
+			ret += "Tercer puesto:" + podio[2].getId() + ", con el dorsal" + podio[2].getDorsal() + " por la calle "
+					+ podio[2].getCalle() + " Oro#" + res.getTercero().getId() + "\n";
 		}
 		return ret;
 	}
