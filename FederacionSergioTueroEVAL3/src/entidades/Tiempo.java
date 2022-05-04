@@ -32,7 +32,6 @@ public class Tiempo {
 		this.segundos = segundos;
 	}
 	
-	
 	public int getCentesimas() {
 		return centesimas;
 	}

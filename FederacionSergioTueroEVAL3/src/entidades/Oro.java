@@ -12,6 +12,7 @@ public class Oro extends Metal {
 	// Ejercicio 5, parte B
 	static private float maxPureza;
 	static private long idMaxPureza;
+	//
 
 	public Oro(long id, float pureza) {
 		super();
