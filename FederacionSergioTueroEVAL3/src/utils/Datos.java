@@ -651,5 +651,14 @@ public class Datos {
 		}
 		return ret;
 	}
+	
+	public static Manager buscarManagerPorId(long id) {
+		Manager ret = null;
+		for(Manager m: Datos.MANAGERS) {
+			if(m.getId()==id)
+				return ret = m;
+		}
+		return ret;
+	}
 
 }

@@ -1,5 +1,7 @@
 package entidades;
 
+import java.util.Collection;
+
 public interface operacionesCRUD<T> {
 	/**
 	 * Este método inserta en la tabla correspondiente de la bdfederacion un nuevo
@@ -21,4 +23,6 @@ public interface operacionesCRUD<T> {
 	public long insetarSinId(T elemento);
 
 	public T buscarPorId(long elemento);
+
+	Collection<T> buscarTodos();
 }

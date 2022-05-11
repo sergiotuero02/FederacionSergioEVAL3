@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 
 import utils.ConexBD;
 
@@ -149,5 +150,11 @@ public enum Lugar implements operacionesCRUD<Lugar> {
 		}
 		System.out.println("FIN");
 		return ret;
+	}
+
+	@Override
+	public Collection<Lugar> buscarTodos() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

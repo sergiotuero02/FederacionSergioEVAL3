@@ -106,5 +106,10 @@ public class ParticipanteDAO implements operacionesCRUD<Participante>{
 		}
 		return ret;
 	}
+	@Override
+	public Collection<Participante> buscarTodos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

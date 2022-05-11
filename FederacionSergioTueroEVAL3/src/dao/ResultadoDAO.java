@@ -1,8 +1,10 @@
 package dao;
 
+import java.util.Collection;
+
 import entidades.*;
 
-public class ResultadoDAO implements operacionesCRUD<Resultado>{
+public class ResultadoDAO implements operacionesCRUD<Resultado> {
 
 	@Override
 	public boolean insetarConId(Resultado elemento) {
@@ -18,6 +20,12 @@ public class ResultadoDAO implements operacionesCRUD<Resultado>{
 
 	@Override
 	public Resultado buscarPorId(long elemento) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<Resultado> buscarTodos() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.Arrays;
+import java.util.Collection;
 
 import utils.ConexBD;
 
@@ -184,6 +185,12 @@ public class Patrocinador implements operacionesCRUD<Patrocinador> {
 
 	@Override
 	public Patrocinador buscarPorId(long elemento) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<Patrocinador> buscarTodos() {
 		// TODO Auto-generated method stub
 		return null;
 	}

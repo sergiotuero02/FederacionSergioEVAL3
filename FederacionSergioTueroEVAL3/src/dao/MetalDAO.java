@@ -1,5 +1,7 @@
 package dao;
 
+import java.util.Collection;
+
 import entidades.*;
 
 public class MetalDAO implements operacionesCRUD<Metal>{
@@ -18,6 +20,12 @@ public class MetalDAO implements operacionesCRUD<Metal>{
 
 	@Override
 	public Metal buscarPorId(long elemento) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<Metal> buscarTodos() {
 		// TODO Auto-generated method stub
 		return null;
 	}

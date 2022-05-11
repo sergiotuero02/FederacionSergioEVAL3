@@ -33,6 +33,10 @@ public class Manager {
 		this.persona = dp;
 	}
 
+	public Manager() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -175,4 +179,10 @@ public class Manager {
 			System.out.println("Se ha producido una Exception" + e.getMessage());
 		}
 	}
+
+	public void setPersona(DatosPersona dp) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
