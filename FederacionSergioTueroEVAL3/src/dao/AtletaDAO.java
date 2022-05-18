@@ -12,7 +12,6 @@ import entidades.Atleta;
 import entidades.DatosPersona;
 import utils.ConexBD;
 import utils.Datos;
-import entidades.*;
 
 public class AtletaDAO implements operacionesCRUD<Atleta> {
 	Connection conex;
@@ -23,45 +22,7 @@ public class AtletaDAO implements operacionesCRUD<Atleta> {
 	}
 
 	@Override
-	public Collection<Atleta> buscarTodos() {
-		List<Atleta> todos = new ArrayList<>();
-		String consultaInsertStr = "select * FROM atletas";
-		try {
-			if (this.conex == null || this.conex.isClosed())
-				this.conex = ConexBD.establecerConexion();
-			PreparedStatement pstmt = conex.prepareStatement(consultaInsertStr);
-			ResultSet result = pstmt.executeQuery();
-			while (result.next()) {
-				Atleta atleta;
-				long idBD = result.getLong("id");
-				long idPersona = result.getLong("idpersona");
-				long idEquipo = result.getLong("idequipo"); //// puede ser null
-				float altura = result.getFloat("altura");
-				float peso = result.getFloat("peso");
-				atleta = new Atleta();
-				atleta.setIdAtleta(idBD);
-				atleta.setAltura(altura);
-				atleta.setPeso(peso);
-				DatosPersona dp = Datos.buscarPersonaPorId(idPersona);
-				atleta.setPersona(dp);
-				/// TODO: Habrá que arreglar esta parte cuando se incluya la información del
-				/// equipo
-				todos.add(atleta);
-			}
-			if (conex != null)
-				conex.close();
-		} catch (SQLException e) {
-			System.out.println("Se ha producido una SQLException:" + e.getMessage());
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println("Se ha producido una Exception:" + e.getMessage());
-			e.printStackTrace();
-		}
-		return todos;
-	}
-
-	@Override
-	public boolean insetarConId(Atleta a) {
+	public boolean insertarConID(Atleta a) {
 		boolean ret = false;
 
 		String consultaInsertStr1 = "insert into personas(id, nombre, telefono, fechanac, nifnie) values (?,?,?,?,?)";
@@ -102,7 +63,7 @@ public class AtletaDAO implements operacionesCRUD<Atleta> {
 	}
 
 	@Override
-	public long insetarSinId(Atleta a) {
+	public long insertarSinID(Atleta a) {
 		long ret = -1;
 
 		String consultaInsertStr1 = "insert into personas(nombre, telefono, fechanac, nifnie) values (?,?,?,?)";
@@ -127,19 +88,24 @@ public class AtletaDAO implements operacionesCRUD<Atleta> {
 				while (result.next()) {
 					long idpersona = result.getLong("id");
 					if (idpersona != -1) {
+						a.getPersona().setId(idpersona);
 						PreparedStatement pstmt21 = conex.prepareStatement(consultaInsertStr3);
 						pstmt21.setFloat(1, a.getAltura());
 						pstmt21.setFloat(2, a.getPeso());
-						pstmt21.setNull(3, java.sql.Types.INTEGER);
+						if (a.getIdEquipo() <= 0)
+							pstmt21.setNull(3, java.sql.Types.INTEGER);
+						else
+							pstmt21.setLong(3, a.getIdEquipo());
 						pstmt21.setLong(4, idpersona);
 						int resultadoInsercion2 = pstmt21.executeUpdate();
 						if (resultadoInsercion2 == 1) {
-							String consultaSelect2 = "SELECT id FROM atletas WHERE (altura=? AND peso=? "
-									+ "AND idpersona=?)";
+							String consultaSelect2 = "SELECT id FROM atletas WHERE  (idpersona=? AND idequipo=?)";
 							PreparedStatement pstmt3 = conex.prepareStatement(consultaSelect2);
-							pstmt3.setFloat(1, a.getAltura());
-							pstmt3.setFloat(2, a.getPeso());
-							pstmt3.setLong(3, a.getPersona().getId());
+							pstmt3.setLong(1, a.getPersona().getId());
+							if (a.getIdEquipo() <= 0)
+								pstmt3.setNull(2, java.sql.Types.INTEGER);
+							else
+								pstmt3.setLong(2, a.getIdEquipo());
 							ResultSet result3 = pstmt3.executeQuery();
 							while (result3.next()) {
 								long idatleta = result3.getLong("id");
@@ -170,8 +136,9 @@ public class AtletaDAO implements operacionesCRUD<Atleta> {
 		return ret;
 	}
 
+	/// Examen 10 ejercicio 10
 	@Override
-	public Atleta buscarPorId(long id) {
+	public Atleta buscarPorID(long id) {
 		Atleta ret = null;
 		String consultaInsertStr = "select * FROM atletas WHERE id=?";
 		try {
@@ -190,10 +157,9 @@ public class AtletaDAO implements operacionesCRUD<Atleta> {
 				ret.setIdAtleta(idBD);
 				ret.setAltura(altura);
 				ret.setPeso(peso);
+				ret.setIdEquipo(idEquipo);
 				DatosPersona dp = Datos.buscarPersonaPorId(idPersona);
 				ret.setPersona(dp);
-				/// TO-DO: Habrá que arreglar esta parte cuando se incluya la información del
-				/// equipo
 			}
 			if (conex != null)
 				conex.close();
@@ -205,6 +171,56 @@ public class AtletaDAO implements operacionesCRUD<Atleta> {
 			e.printStackTrace();
 		}
 		return ret;
+	}
+
+	@Override
+	public Collection<Atleta> buscarTodos() {
+		List<Atleta> todos = new ArrayList<>();
+		String consultaInsertStr = "select * FROM atletas";
+		try {
+			if (this.conex == null || this.conex.isClosed())
+				this.conex = ConexBD.establecerConexion();
+			PreparedStatement pstmt = conex.prepareStatement(consultaInsertStr);
+			ResultSet result = pstmt.executeQuery();
+			while (result.next()) {
+				Atleta atleta;
+				long idBD = result.getLong("id");
+				long idPersona = result.getLong("idpersona");
+				long idEquipo = result.getLong("idequipo");
+				float altura = result.getFloat("altura");
+				float peso = result.getFloat("peso");
+				atleta = new Atleta();
+				atleta.setIdAtleta(idBD);
+				atleta.setAltura(altura);
+				atleta.setPeso(peso);
+				DatosPersona dp = Datos.buscarPersonaPorId(idPersona);
+				atleta.setPersona(dp);
+				/// TODO: Habrá que arreglar esta parte cuando se incluya la información del
+				/// equipo
+				todos.add(atleta);
+			}
+			if (conex != null)
+				conex.close();
+		} catch (SQLException e) {
+			System.out.println("Se ha producido una SQLException:" + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Se ha producido una Exception:" + e.getMessage());
+			e.printStackTrace();
+		}
+		return todos;
+	}
+
+	@Override
+	public boolean modificar(Atleta elemento) {
+		// TODO Esbozo de método generado automáticamente
+		return false;
+	}
+
+	@Override
+	public boolean eliminar(Atleta elemento) {
+		// TODO Esbozo de método generado automáticamente
+		return false;
 	}
 
 }

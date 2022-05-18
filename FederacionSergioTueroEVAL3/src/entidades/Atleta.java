@@ -11,7 +11,7 @@ import utils.Datos;
 import utils.Utilidades;
 import validaciones.Validaciones;
 
-public class Atleta extends Participante{
+public class Atleta extends Participante {
 	private long idAtleta;
 	private float altura;
 	private float peso;
@@ -84,7 +84,6 @@ public class Atleta extends Participante{
 	public DatosPersona getPersona() {
 		return this.persona;
 	}
-	
 
 	public long getIdAtleta() {
 		return idAtleta;
@@ -94,11 +93,11 @@ public class Atleta extends Participante{
 		this.idAtleta = idAtleta;
 	}
 
-	public long getIdequipo() {
+	public long getIdEquipo() {
 		return idequipo;
 	}
 
-	public void setIdequipo(long idequipo) {
+	public void setIdEquipo(long idequipo) {
 		this.idequipo = idequipo;
 	}
 
@@ -165,11 +164,8 @@ public class Atleta extends Participante{
 	 */
 	@Override
 	public String toString() {
-		return "" + persona.getNombre() + " (" + persona.getNifnie().mostrar() + ") del año "
-				+ persona.getFechaNac().getYear() + "\t" + peso + "Kgs. " + altura + "m.";
+		return "" + this.persona.getNombre() + " (" + this.persona.getNifnie().mostrar() + ") del año "
+				+ this.persona.getFechaNac().getYear() + "\t" + this.peso + "Kgs. " + this.altura + "m.";
 	}
-
-
-
 
 }

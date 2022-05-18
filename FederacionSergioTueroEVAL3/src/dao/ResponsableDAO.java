@@ -6,27 +6,35 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import entidades.Manager;
+import entidades.Responsable;
 import utils.ConexBD;
 import utils.Datos;
 
-public class ManagerDAO implements operacionesCRUD<Manager>{
+public class ResponsableDAO implements operacionesCRUD<Responsable>{
 
-	/// Examen 10 ejercicio 11
+	Connection conex;
+
+	public ResponsableDAO(Connection conex) {
+		if (this.conex == null)
+			this.conex = conex;
+	}
+	/// Examen 10 Ejercicio 9
 		@Override
-		public boolean insertarConID(Manager m) {
+		public boolean insertarConID(Responsable r) {
 			boolean ret = false;
 			Connection conex = ConexBD.establecerConexion();
-			String consultaInsertStr = "insert into managers(id, idpersona, telefono, direccion) values (?,?,?,?)";
+			String consultaInsertStr = "insert into responsables(id, idpersona, telefonoprof, horaini, horafin) values (?,?,?,?,?)";
 			try {
 				PreparedStatement pstmt = conex.prepareStatement(consultaInsertStr);
 
-				pstmt.setLong(1, m.getId());
-				pstmt.setLong(2, m.getPersona().getId());
-				pstmt.setString(3, m.getTelefono());
-				pstmt.setString(4, m.getDireccion());
+				pstmt.setLong(1, r.getId());
+				pstmt.setLong(2, r.getPersona().getId());
+				pstmt.setString(3, r.getTelefonoProf());
+				pstmt.setTime(4, java.sql.Time.valueOf(r.getHorarioIni()));
+				pstmt.setTime(5, java.sql.Time.valueOf(r.getHorarioFin()));
 				int resultadoInsercion = pstmt.executeUpdate();
 				ret = (resultadoInsercion == 1);
+
 			} catch (SQLException e) {
 				System.out.println("Se ha producido una SQLException:" + e.getMessage());
 				e.printStackTrace();
@@ -34,25 +42,27 @@ public class ManagerDAO implements operacionesCRUD<Manager>{
 			return ret;
 		}
 
-		/// Examen 10 ejercicio 11
 		@Override
-		public long insertarSinID(Manager m) {
+		public long insertarSinID(Responsable r) {
 			long ret = -1;
 			Connection conex = ConexBD.establecerConexion();
-			String consultaInsertStr = "insert into managers(idpersona, telefonoprof, direccion) values (?,?,?)";
+			String consultaInsertStr = "insert into responsables(idpersona, telefonoprof, horaini, horafin) values (?,?,?,?)";
 			try {
 				PreparedStatement pstmt = conex.prepareStatement(consultaInsertStr);
-				pstmt.setLong(1, m.getPersona().getId());
-				pstmt.setString(2, m.getTelefono());
-				pstmt.setString(3, m.getDireccion());
+
+				pstmt.setLong(1, r.getPersona().getId());
+				pstmt.setString(2, r.getTelefonoProf());
+				pstmt.setTime(3, java.sql.Time.valueOf(r.getHorarioIni()));
+				pstmt.setTime(4, java.sql.Time.valueOf(r.getHorarioFin()));
 				int resultadoInsercion = pstmt.executeUpdate();
 				if (resultadoInsercion == 1) {
-					String consultaSelect = "SELECT id FROM managers WHERE (idpersona=? AND telefono=? "
-							+ "AND direccion=?)";
+					String consultaSelect = "SELECT id FROM responsables WHERE (idpersona=? AND telefonoprof=? "
+							+ "AND horaini=? AND horafin=?)";
 					PreparedStatement pstmt2 = conex.prepareStatement(consultaSelect);
-					pstmt2.setLong(1, m.getPersona().getId());
-					pstmt2.setString(2, m.getTelefono());
-					pstmt2.setString(3, m.getDireccion());
+					pstmt2.setLong(1, r.getPersona().getId());
+					pstmt2.setString(2, r.getTelefonoProf());
+					pstmt2.setTime(3, java.sql.Time.valueOf(r.getHorarioIni()));
+					pstmt2.setTime(4, java.sql.Time.valueOf(r.getHorarioFin()));
 					ResultSet result = pstmt2.executeQuery();
 					while (result.next()) {
 						long id = result.getLong("id");
@@ -76,12 +86,12 @@ public class ManagerDAO implements operacionesCRUD<Manager>{
 			return ret;
 		}
 
-		/// Examen 10 ejercicio 11
+		/// Examen 10 ejercicio 10
 		@Override
-		public Manager buscarPorID(long id) {
-			Manager ret = null;
+		public Responsable buscarPorID(long id) {
+			Responsable ret = null;
 			Connection conex = ConexBD.establecerConexion();
-			String consultaInsertStr = "select * FROM managers WHERE id=?";
+			String consultaInsertStr = "select * FROM responsables WHERE id=?";
 			try {
 				PreparedStatement pstmt = conex.prepareStatement(consultaInsertStr);
 				pstmt.setLong(1, id);
@@ -89,12 +99,14 @@ public class ManagerDAO implements operacionesCRUD<Manager>{
 				while (result.next()) {
 					long idBD = result.getLong("id");
 					long idPersona = result.getLong("idpersona");
-					String telefono = result.getString("telefono");
-					String direccion = result.getString("direccion");
-					ret = new Manager();
+					String telefonoprof = result.getString("telefonoprof");
+					java.time.LocalTime horaini = result.getTime("horaini").toLocalTime();
+					java.time.LocalTime horafin = result.getTime("horafin").toLocalTime();
+					ret = new Responsable();
 					ret.setId(idBD);
-					ret.setTelefono(telefono);
-					ret.setDireccion(direccion);
+					ret.setHorarioFin(horafin);
+					ret.setHorarioIni(horaini);
+					ret.setTelefonoProf(telefonoprof);
 					ret.setPersona(Datos.buscarPersonaPorId(idPersona));
 				}
 			} catch (SQLException e) {
@@ -109,19 +121,19 @@ public class ManagerDAO implements operacionesCRUD<Manager>{
 
 
 	@Override
-	public Collection<Manager> buscarTodos() {
+	public Collection<Responsable> buscarTodos() {
 		// TODO Esbozo de método generado automáticamente
 		return null;
 	}
 
 	@Override
-	public boolean modificar(Manager elemento) {
+	public boolean modificar(Responsable elemento) {
 		// TODO Esbozo de método generado automáticamente
 		return false;
 	}
 
 	@Override
-	public boolean eliminar(Manager elemento) {
+	public boolean eliminar(Responsable elemento) {
 		// TODO Esbozo de método generado automáticamente
 		return false;
 	}

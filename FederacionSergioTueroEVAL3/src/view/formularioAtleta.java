@@ -229,7 +229,7 @@ public class formularioAtleta extends JFrame {
 				} catch (NumberFormatException n) {
 					n.getMessage();
 				}
-	
+				
 
 			}
 

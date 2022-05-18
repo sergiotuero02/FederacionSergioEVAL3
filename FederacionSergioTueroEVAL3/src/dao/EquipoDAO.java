@@ -8,32 +8,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import entidades.*;
+import entidades.Equipo;
+import entidades.Manager;
 import utils.ConexBD;
-import utils.Datos;
+
 
 public class EquipoDAO implements operacionesCRUD<Equipo> {
 	Connection conex;
 
-	public EquipoDAO(Connection con) {
+	public EquipoDAO(Connection conex) {
 		if (this.conex == null)
 			this.conex = conex;
 	}
 
 	@Override
-	public boolean insetarConId(Equipo elemento) {
+	public boolean insertarConID(Equipo elemento) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public long insetarSinId(Equipo elemento) {
+	public long insertarSinID(Equipo elemento) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public Equipo buscarPorId(long elemento) {
+	public Equipo buscarPorID(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -48,19 +49,21 @@ public class EquipoDAO implements operacionesCRUD<Equipo> {
 			PreparedStatement pstmt = conex.prepareStatement(consultaInsertStr);
 			ResultSet result = pstmt.executeQuery();
 			while (result.next()) {
-				Equipo equipo;
+				Equipo eq;
 				long idBD = result.getLong("id");
-				long idManager = result.getLong("idmanager");
-				int anioincripcion = result.getInt("anioincripcion");
 				String nombre = result.getString("nombre");
-				equipo = new Equipo();
-				equipo.setId(idBD);
-				ManagerDAO m = new ManagerDAO();
-				Manager m1 = m.buscarPorId(idManager);
-				equipo.setManager(m1);
-				equipo.setAnioinscripcion(anioincripcion);
-				equipo.setNombre(nombre);
-				todos.add(equipo);
+				int anio = result.getInt("anioinscripcion");
+				long idManager = result.getLong("idmanager");
+				eq = new Equipo();
+				eq.setId(idBD);
+				eq.setNombre(nombre);
+				eq.setAnioinscripcion(anio);
+				ManagerDAO manDAO = new ManagerDAO();
+				Manager man = manDAO.buscarPorID(idManager);
+				eq.setManager(man);
+				/// TODO: Habrá que arreglar esta parte cuando se incluya la información de los
+				/// atletas del equipo
+				todos.add(eq);
 			}
 			if (conex != null)
 				conex.close();
@@ -74,4 +77,15 @@ public class EquipoDAO implements operacionesCRUD<Equipo> {
 		return todos;
 	}
 
+	@Override
+	public boolean modificar(Equipo elemento) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean eliminar(Equipo elemento) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

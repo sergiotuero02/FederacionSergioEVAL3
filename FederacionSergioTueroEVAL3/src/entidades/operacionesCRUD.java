@@ -25,4 +25,10 @@ public interface operacionesCRUD<T> {
 	public T buscarPorId(long elemento);
 
 	Collection<T> buscarTodos();
+	
+	public boolean modificar(T elemento);
+	
+//	public boolean modificarTodos(Collection<T> coleccion);
+	
+	public boolean eliminar(T elemento);
 }

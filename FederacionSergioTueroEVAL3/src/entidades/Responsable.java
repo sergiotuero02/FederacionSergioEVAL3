@@ -19,6 +19,10 @@ public class Responsable {
 		this.persona = dp;
 		}
 
+	public Responsable() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public long getId() {
 		return id;
 	}
